@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Email Composer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 900px;
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .composer-section {
+            padding: 30px;
+        }
+
+        .input-group {
+            margin-bottom: 30px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .content-editor {
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            min-height: 300px;
+            padding: 20px;
+            font-size: 16px;
+            line-height: 1.6;
+            background: #fafafa;
+            transition: border-color 0.3s;
+        }
+
+        .content-editor:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+        }
+
+        .content-editor h1, .content-editor h2, .content-editor h3 {
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+            color: #333;
+        }
+
+        .content-editor p {
+            margin-bottom: 1em;
+        }
+
+        .footer {
+            padding: 30px;
+            background: #f5f5f5;
+            text-align: center;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .send-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 50px;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .send-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .send-button:active {
+            transform: translateY(0);
+        }
+
+        .send-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .message {
+            margin-top: 15px;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .message.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>✉️ Simple Email Composer</h1>
+            <p>Create beautiful HTML emails with ease</p>
+        </div>
+
+        <div class="composer-section">
+            <div class="input-group">
+                <label for="destination">Destination Email Address</label>
+                <input type="email" id="destination" placeholder="recipient@example.com" required>
+            </div>
+
+            <div class="input-group">
+                <label for="content">Email Content (Editable HTML)</label>
+                <div id="content" class="content-editor" contenteditable="true">
+                    <h2 style="color: #667eea; font-size: 28px; margin-bottom: 15px;">Hello There! 👋</h2>
+                    <p style="font-size: 16px; line-height: 1.8; color: #333;">Welcome to our <strong>Simple Email Composer</strong>. This is a beautiful HTML email template that you can customize.</p>
+                    <p style="font-size: 16px; line-height: 1.8; color: #333;">Feel free to <em>edit this content</em> directly! You can:</p>
+                    <ul style="margin-left: 20px; margin-bottom: 15px; color: #333;">
+                        <li style="margin-bottom: 8px;">Add text, images, and links</li>
+                        <li style="margin-bottom: 8px;">Format with <strong>bold</strong>, <em>italic</em>, and more</li>
+                        <li style="margin-bottom: 8px;">Create beautiful layouts with inline styles</li>
+                    </ul>
+                    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 8px; margin-top: 20px;">
+                        <h3 style="color: white; margin-bottom: 10px;">Special Offer! 🎉</h3>
+                        <p style="color: white; margin: 0;">This is an example of a styled section. You can create your own beautiful designs!</p>
+                    </div>
+                    <p style="font-size: 14px; color: #666; margin-top: 20px;">Best regards,<br>Your Team</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <button id="sendButton" class="send-button">Send Email</button>
+            <div id="message" class="message"></div>
+        </div>
+    </div>
+
+    <script>
+        const sendButton = document.getElementById('sendButton');
+        const destinationInput = document.getElementById('destination');
+        const contentEditor = document.getElementById('content');
+        const messageDiv = document.getElementById('message');
+
+        function showMessage(text, type) {
+            messageDiv.textContent = text;
+            messageDiv.className = `message ${type} show`;
+            setTimeout(() => {
+                messageDiv.className = 'message';
+            }, 5000);
+        }
+
+        sendButton.addEventListener('click', async () => {
+            const destination = destinationInput.value.trim();
+            
+            // Validate destination
+            if (!destination) {
+                showMessage('Please enter a destination email address', 'error');
+                return;
+            }
+
+            const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            if (!emailRegex.test(destination)) {
+                showMessage('Please enter a valid email address', 'error');
+                return;
+            }
+
+            // Get the HTML content from the editor using outerHTML
+            const htmlContent = contentEditor.outerHTML;
+            
+            // Replace the contenteditable attribute and class to clean up the HTML
+            const cleanedHtml = htmlContent
+                .replace(/contenteditable="true"/g, '')
+                .replace(/class="content-editor"/g, 'style="font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, sans-serif; line-height: 1.6; padding: 20px;"');
+
+            // Disable button and show loading state
+            sendButton.disabled = true;
+            sendButton.textContent = 'Sending...';
+
+            try {
+                const response = await fetch('/send-email', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        to: destination,
+                        html: cleanedHtml
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showMessage('Email sent successfully! ✓', 'success');
+                } else {
+                    showMessage(data.message || 'Failed to send email', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showMessage('Network error. Please try again.', 'error');
+            } finally {
+                // Re-enable button
+                sendButton.disabled = false;
+                sendButton.textContent = 'Send Email';
+            }
+        });
+
+        // Add keyboard shortcut (Ctrl/Cmd + Enter) to send
+        document.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                sendButton.click();
+            }
+        });
+    </script>
+</body>
+</html>
