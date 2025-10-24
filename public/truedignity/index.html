@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Email Composer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #f97316 0%, #f59e0b 50%, #eab308 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 900px;
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.95;
+        }
+
+        .composer-section {
+            padding: 30px;
+        }
+
+        .input-group {
+            margin-bottom: 30px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #f97316;
+        }
+
+        .content-editor {
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            min-height: 300px;
+            padding: 20px;
+            font-size: 16px;
+            line-height: 1.6;
+            background: #fafafa;
+            transition: border-color 0.3s;
+        }
+
+        .content-editor:focus {
+            outline: none;
+            border-color: #f97316;
+            background: white;
+        }
+
+        .content-editor h1, .content-editor h2, .content-editor h3 {
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+            color: #333;
+        }
+
+        .content-editor p {
+            margin-bottom: 1em;
+        }
+
+        .footer {
+            padding: 30px;
+            background: #f5f5f5;
+            text-align: center;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .send-button {
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+            color: white;
+            border: none;
+            padding: 15px 50px;
+            font-size: 18px;
+            font-weight: 700;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 10px 20px rgba(249, 115, 22, 0.3);
+        }
+
+        .send-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(249, 115, 22, 0.4);
+        }
+
+        .send-button:active {
+            transform: translateY(0);
+        }
+
+        .send-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .message {
+            margin-top: 15px;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .message.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>✉️ TrueDignity Email Composer</h1>
+            <p>Kirim Email Profesional untuk Menjangkau Prospek Anda</p>
+        </div>
+
+        <div class="composer-section">
+            <div class="input-group">
+                <label for="senderName">Nama Pengirim</label>
+                <input type="text" id="senderName" placeholder="Tim TrueDignity" required>
+            </div>
+
+            <div class="input-group">
+                <label for="fromAddress">Email Asal (Pengirim)</label>
+                <input type="email" id="fromAddress" placeholder="support@truedignity.id" required>
+            </div>
+
+            <div class="input-group">
+                <label for="destination">Email Tujuan</label>
+                <input type="email" id="destination" placeholder="notaris@contoh.com" required>
+            </div>
+
+            <div class="input-group">
+                <label for="subject">Subjek Email</label>
+                <input type="text" id="subject" placeholder="Transformasi Digital untuk Kantor Notaris Anda" required>
+            </div>
+
+            <div class="input-group">
+                <label for="content">Konten Email (Edit Langsung) <span style="font-size: 12px; color: #6b7280; font-weight: normal;">- Ganti [Nama Penerima] dengan nama notaris</span></label>
+                <div id="content" class="content-editor" contenteditable="true">
+                    <h2 style="color: #1f2937; font-size: 28px; font-weight: 700; margin-bottom: 15px;">Transformasi Digital Kantor Notaris Anda Dimulai di Sini</h2>
+                    <p style="font-size: 16px; line-height: 1.8; color: #374151;">Halo [Nama Penerima],</p>
+                    <p style="font-size: 16px; line-height: 1.8; color: #374151;">Sebagai notaris profesional yang visioner, kami memahami betapa berharganya waktu Anda. Tanpa TrueDignity, Anda mungkin menghadapi:</p>
+
+                    <!-- Redesigned Pain Points Grid -->
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; margin: 25px 0;">
+                        <div style="background: linear-gradient(135deg, rgba(249, 115, 22, 0.05), rgba(234, 88, 12, 0.05)); border: 2px solid rgba(249, 115, 22, 0.1); border-radius: 12px; padding: 25px; text-align: center;">
+                            <div style="font-size: 32px; margin-bottom: 15px;">📞</div>
+                            <h4 style="color: #f97316; font-weight: 700; margin: 0 0 12px 0; font-size: 16px;">Interupsi Tak Henti</h4>
+                            <p style="color: #374151; margin: 0; font-size: 14px; line-height: 1.5;">Klien terus menelpon untuk menanyakan status permohonan, mengganggu fokus kerja Anda</p>
+                        </div>
+
+                        <div style="background: linear-gradient(135deg, rgba(249, 115, 22, 0.05), rgba(234, 88, 12, 0.05)); border: 2px solid rgba(249, 115, 22, 0.1); border-radius: 12px; padding: 25px; text-align: center;">
+                            <div style="font-size: 32px; margin-bottom: 15px;">📄</div>
+                            <h4 style="color: #f97316; font-weight: 700; margin: 0 0 12px 0; font-size: 16px;">Dokumen Tersebar</h4>
+                            <p style="color: #374151; margin: 0; font-size: 14px; line-height: 1.5;">File-file penting tersebar di berbagai folder, sulit ditemukan saat dibutuhkan mendesak</p>
+                        </div>
+
+                        <div style="background: linear-gradient(135deg, rgba(234, 88, 12, 0.05), rgba(249, 115, 22, 0.05)); border: 2px solid rgba(234, 88, 12, 0.1); border-radius: 12px; padding: 25px; text-align: center;">
+                            <div style="font-size: 32px; margin-bottom: 15px;">🏢</div>
+                            <h4 style="color: #ea580c; font-weight: 700; margin: 0 0 12px 0; font-size: 16px;">Terikat Lokasi</h4>
+                            <p style="color: #374151; margin: 0; font-size: 14px; line-height: 1.5;">Harus selalu berada di kantor untuk menandatangani dokumen, membatasi mobilitas kerja</p>
+                        </div>
+
+                        <div style="background: linear-gradient(135deg, rgba(249, 115, 22, 0.05), rgba(234, 88, 12, 0.05)); border: 2px solid rgba(249, 115, 22, 0.1); border-radius: 12px; padding: 25px; text-align: center;">
+                            <div style="font-size: 32px; margin-bottom: 15px;">⏰</div>
+                            <h4 style="color: #f97316; font-weight: 700; margin: 0 0 12px 0; font-size: 16px;">Waktu Terbuang</h4>
+                            <p style="color: #374151; margin: 0; font-size: 14px; line-height: 1.5;">15+ jam per minggu terbuang untuk tugas administratif, bukan untuk pengembangan bisnis</p>
+                        </div>
+                    </div>
+                    <div style="background: linear-gradient(135deg, #fef3c7, #fef7cd); border: 2px solid #fbbf24; border-radius: 15px; padding: 25px; margin: 25px 0;">
+                        <h3 style="color: #1f2937; font-weight: 700; margin-bottom: 15px; font-size: 22px;">💡 Revolusi Digital untuk Kantor Notaris Anda</h3>
+                        <p style="color: #374151; margin-bottom: 15px; line-height: 1.8;">Dengarkan kisah <strong><a href="https://knzonline.com" style="color: #f97316; text-decoration: underline; font-weight: 700;">knzonline.com</a></strong> bertransformasi menjadi kantor notaris digital pertama di Sumatera Utara. <strong>TrueDignity</strong> dirancang khusus untuk kebutuhan unik profesi notaris:</p>
+                        <p style="color: #374151; margin: 0; line-height: 1.8;">✓ <strong>Dashboard Real-time</strong> - Monitor semua permohonan dalam 30 detik<br>✓ <strong>Tanda Tangan Digital</strong> - Sah secara hukum dari mana saja<br>✓ <strong>Keamanan Data</strong> - 100% disimpan di perangkat Anda<br>✓ <strong>Integrasi Lengkap</strong> - Terhubung dengan sistem notaris lainnya</p>
+                    </div>
+                    <div style="background: linear-gradient(135deg, #f97316, #ea580c); color: white; padding: 25px; border-radius: 15px; margin-top: 25px; text-align: center;">
+                        <h3 style="color: white; margin-bottom: 12px; font-size: 20px; font-weight: 700;">🎯 Penawaran Eksklusif Early Adopter</h3>
+                        <p style="color: white; margin-bottom: 8px; font-size: 18px; font-weight: 700;">Rp 10.000.000/bulan • 6 bulan berlangganan</p>
+                        <p style="color: white; margin: 0 0 20px 0; font-size: 14px; opacity: 0.9;">Hemat 40% (dari Rp 16.700.000) untuk 10 notaris visioner pertama</p>
+
+                        <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+                            <a href="https://notarisdigital.id/offer" style="display: inline-block; background: white; color: #f97316; text-decoration: none; font-weight: 700; padding: 10px 25px; border-radius: 25px; font-size: 14px; border: 2px solid white; transition: all 0.3s ease;">📧 Ambil Penawaran</a>
+                            <a href="https://notarisdigital.id/demo" style="display: inline-block; background: transparent; color: white; text-decoration: none; font-weight: 700; padding: 10px 25px; border-radius: 25px; font-size: 14px; border: 2px solid white; transition: all 0.3s ease;">🎬 Lihat Demo</a>
+                        </div>
+                    </div>
+                    <p style="font-size: 16px; color: #374151; margin-top: 25px; line-height: 1.8;"><strong>Pertanyaan untuk Anda:</strong> Berapa nilai waktu 15+ jam per minggu yang bisa Anda hemat untuk fokus pada pengembangan bisnis dan keluarga?</p>
+                    <p style="font-size: 14px; color: #6b7280; margin-top: 20px; line-height: 1.6;">Salam hangat,<br><strong>Tim TrueDignity</strong><br>Partner Digital untuk Kemajuan Kantor Notaris Anda</p>
+                    <p style="font-size: 12px; color: #9ca3af; margin-top: 10px; line-height: 1.5;">PS: Penawaran early adopter ini hanya tersedia untuk 10 notaris pertama. Jangan lewatkan kesempatan untuk menjadi pelopor digitalisasi notaris di Indonesia.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <button id="sendButton" class="send-button">Kirim Email</button>
+            <div id="message" class="message"></div>
+        </div>
+    </div>
+
+    <script>
+        const sendButton = document.getElementById('sendButton');
+        const senderNameInput = document.getElementById('senderName');
+        const fromAddressInput = document.getElementById('fromAddress');
+        const destinationInput = document.getElementById('destination');
+        const subjectInput = document.getElementById('subject');
+        const contentEditor = document.getElementById('content');
+        const messageDiv = document.getElementById('message');
+
+        // Load SMTP configuration from server
+        async function loadSMTPConfig() {
+            try {
+                const composer = 'truedignity';
+                const response = await fetch(`/get-smtp-config/${composer}`);
+                const data = await response.json();
+
+                if (data.success && data.config.user) {
+                    // Auto-fill from address with SMTP user
+                    fromAddressInput.value = data.config.user;
+                }
+            } catch (error) {
+                console.error('Error loading SMTP config:', error);
+                // Use default value if server is unavailable
+                fromAddressInput.value = 'support@truedignity.id';
+            }
+        }
+
+        // Load configuration when page loads
+        loadSMTPConfig();
+
+        function showMessage(text, type) {
+            messageDiv.textContent = text;
+            messageDiv.className = `message ${type} show`;
+            setTimeout(() => {
+                messageDiv.className = 'message';
+            }, 5000);
+        }
+
+        sendButton.addEventListener('click', async () => {
+            const senderName = senderNameInput.value.trim();
+            const fromAddress = fromAddressInput.value.trim();
+            const destination = destinationInput.value.trim();
+            const subject = subjectInput.value.trim();
+
+            // Determine composer from URL
+            const composer = 'truedignity';
+
+            // Validate sender name
+            if (!senderName) {
+                showMessage('Mohon masukkan nama pengirim', 'error');
+                return;
+            }
+
+            // Validate from address
+            if (!fromAddress) {
+                showMessage('Mohon masukkan alamat email asal', 'error');
+                return;
+            }
+
+            const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            if (!emailRegex.test(fromAddress)) {
+                showMessage('Mohon masukkan alamat email asal yang valid', 'error');
+                return;
+            }
+
+            // Validate destination
+            if (!destination) {
+                showMessage('Mohon masukkan alamat email tujuan', 'error');
+                return;
+            }
+
+            if (!emailRegex.test(destination)) {
+                showMessage('Mohon masukkan alamat email tujuan yang valid', 'error');
+                return;
+            }
+
+            // Validate subject
+            if (!subject) {
+                showMessage('Mohon masukkan subjek email', 'error');
+                return;
+            }
+
+            // Get the HTML content from the editor using outerHTML
+            const htmlContent = contentEditor.outerHTML;
+
+            // Replace the contenteditable attribute and class to clean up the HTML
+            const cleanedHtml = htmlContent
+                .replace(/contenteditable="true"/g, '')
+                .replace(/class="content-editor"/g, 'style="font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, sans-serif; line-height: 1.6; padding: 20px;"');
+
+            // Format from address with sender name
+            const formattedFrom = `"${senderName}" <${fromAddress}>`;
+
+            // Disable button and show loading state
+            sendButton.disabled = true;
+            sendButton.textContent = 'Mengirim...';
+
+            try {
+                const response = await fetch('/send-email', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        composer: composer,
+                        from: formattedFrom,
+                        to: destination,
+                        subject: subject,
+                        html: cleanedHtml
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showMessage('Email berhasil dikirim! ✓', 'success');
+                } else {
+                    showMessage(data.message || 'Gagal mengirim email', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showMessage('Kesalahan jaringan. Silakan coba lagi.', 'error');
+            } finally {
+                // Re-enable button
+                sendButton.disabled = false;
+                sendButton.textContent = 'Kirim Email';
+            }
+        });
+
+        // Add keyboard shortcut (Ctrl/Cmd + Enter) to send
+        document.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                sendButton.click();
+            }
+        });
+    </script>
+</body>
+</html>

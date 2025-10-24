@@ -1,0 +1,14 @@
+{
+  "truedignity": {
+    "host": "smtp.hostinger.com",
+    "port": "465",
+    "user": "mail@notarisdigital.id",
+    "pass": "1-Keamanan"
+  },
+  "anywork": {
+    "host": "smtp.hostinger.com",
+    "port": "465",
+    "user": "mail@anywork.dev",
+    "pass": "1-Kemenangan"
+  }
+}

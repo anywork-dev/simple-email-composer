@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple Email Composer</title>
+    <title>Email Composer Dashboard</title>
     <style>
         * {
             margin: 0;
@@ -26,7 +26,7 @@
             border-radius: 12px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             width: 100%;
-            max-width: 900px;
+            max-width: 1000px;
             overflow: hidden;
         }
 
@@ -39,21 +39,101 @@
 
         .header h1 {
             font-size: 32px;
-            font-weight: 600;
+            font-weight: 700;
             margin-bottom: 10px;
         }
 
         .header p {
             font-size: 16px;
-            opacity: 0.9;
+            opacity: 0.95;
         }
 
-        .composer-section {
+        .dashboard-section {
             padding: 30px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .composer-selection {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 25px;
+        }
+
+        .settings-section {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 25px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .composer-card {
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .composer-card:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .composer-card.active {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .composer-name {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 5px;
+        }
+
+        .composer-desc {
+            font-size: 14px;
+            color: #6b7280;
+            line-height: 1.4;
+            margin-bottom: 15px;
+        }
+
+        .navigate-button {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .navigate-button:hover {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
         }
 
         .input-group {
-            margin-bottom: 30px;
+            margin-bottom: 20px;
         }
 
         .input-group label {
@@ -78,66 +158,51 @@
             border-color: #667eea;
         }
 
-        .content-editor {
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            min-height: 300px;
-            padding: 20px;
-            font-size: 16px;
-            line-height: 1.6;
-            background: #fafafa;
-            transition: border-color 0.3s;
-        }
-
-        .content-editor:focus {
-            outline: none;
-            border-color: #667eea;
-            background: white;
-        }
-
-        .content-editor h1, .content-editor h2, .content-editor h3 {
-            margin-top: 0.5em;
-            margin-bottom: 0.5em;
-            color: #333;
-        }
-
-        .content-editor p {
-            margin-bottom: 1em;
-        }
-
-        .footer {
-            padding: 30px;
-            background: #f5f5f5;
-            text-align: center;
-            border-top: 1px solid #e0e0e0;
-        }
-
-        .send-button {
+        .save-button {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
-            padding: 15px 50px;
-            font-size: 18px;
-            font-weight: 600;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: 700;
             border-radius: 8px;
             cursor: pointer;
             transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+            width: 100%;
         }
 
-        .send-button:hover {
+        .save-button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
         }
 
-        .send-button:active {
+        .save-button:active {
             transform: translateY(0);
         }
 
-        .send-button:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-            box-shadow: none;
+        .reset-button {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3);
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .reset-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
+        }
+
+        .reset-button:active {
+            transform: translateY(0);
         }
 
         .message {
@@ -163,53 +228,137 @@
         .message.show {
             display: block;
         }
+
+        @media (max-width: 768px) {
+            .dashboard-section {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>✉️ Simple Email Composer</h1>
-            <p>Create beautiful HTML emails with ease</p>
+            <h1>📧 Email Composer Dashboard</h1>
+            <p>Pilih template email dan konfigurasi SMTP untuk mengirim email</p>
         </div>
 
-        <div class="composer-section">
-            <div class="input-group">
-                <label for="destination">Destination Email Address</label>
-                <input type="email" id="destination" placeholder="recipient@example.com" required>
-            </div>
+        <div class="dashboard-section">
+            <div class="composer-selection">
+                <h2 class="section-title">Pilih Email Composer</h2>
 
-            <div class="input-group">
-                <label for="content">Email Content (Editable HTML)</label>
-                <div id="content" class="content-editor" contenteditable="true">
-                    <h2 style="color: #667eea; font-size: 28px; margin-bottom: 15px;">Hello There! 👋</h2>
-                    <p style="font-size: 16px; line-height: 1.8; color: #333;">Welcome to our <strong>Simple Email Composer</strong>. This is a beautiful HTML email template that you can customize.</p>
-                    <p style="font-size: 16px; line-height: 1.8; color: #333;">Feel free to <em>edit this content</em> directly! You can:</p>
-                    <ul style="margin-left: 20px; margin-bottom: 15px; color: #333;">
-                        <li style="margin-bottom: 8px;">Add text, images, and links</li>
-                        <li style="margin-bottom: 8px;">Format with <strong>bold</strong>, <em>italic</em>, and more</li>
-                        <li style="margin-bottom: 8px;">Create beautiful layouts with inline styles</li>
-                    </ul>
-                    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 8px; margin-top: 20px;">
-                        <h3 style="color: white; margin-bottom: 10px;">Special Offer! 🎉</h3>
-                        <p style="color: white; margin: 0;">This is an example of a styled section. You can create your own beautiful designs!</p>
-                    </div>
-                    <p style="font-size: 14px; color: #666; margin-top: 20px;">Best regards,<br>Your Team</p>
+                <div class="composer-card" data-composer="truedignity">
+                    <div class="composer-name">TrueDignity</div>
+                    <div class="composer-desc">Template email untuk menjangkau notaris dan profesional hukum</div>
+                    <button class="navigate-button" data-url="/truedignity">📧 Buka TrueDignity Composer</button>
+                </div>
+
+                <div class="composer-card" data-composer="anywork">
+                    <div class="composer-name">AnyWork</div>
+                    <div class="composer-desc">Partner Transformasi Digital untuk Bisnis Indonesia - Dari Sistem Berantakan Menuju Operasional Cerdas</div>
+                    <button class="navigate-button" data-url="/anywork">🚀 Buka AnyWork Composer</button>
+                </div>
+
+                <div style="margin-top: 20px; padding: 15px; background: #e0f2fe; border-radius: 8px; border-left: 4px solid #3b82f6;">
+                    <p style="margin: 0; font-size: 14px; color: #1e40af; line-height: 1.5;">
+                        <strong>Catatan:</strong> Klik pada template untuk mengatur konfigurasi SMTP, atau klik tombol "Buka Composer" untuk langsung membuka halaman composer di tab baru
+                    </p>
                 </div>
             </div>
-        </div>
 
-        <div class="footer">
-            <button id="sendButton" class="send-button">Send Email</button>
-            <div id="message" class="message"></div>
+            <div class="settings-section">
+                <h2 class="section-title">Konfigurasi SMTP</h2>
+
+                <div class="input-group">
+                    <label for="smtpHost">SMTP Host</label>
+                    <input type="text" id="smtpHost" placeholder="smtp.example.com">
+                </div>
+
+                <div class="input-group">
+                    <label for="smtpPort">SMTP Port</label>
+                    <input type="number" id="smtpPort" placeholder="465">
+                </div>
+
+                <div class="input-group">
+                    <label for="smtpUser">SMTP User</label>
+                    <input type="text" id="smtpUser" placeholder="email@example.com">
+                </div>
+
+                <div class="input-group">
+                    <label for="smtpPass">SMTP Password</label>
+                    <input type="password" id="smtpPass" placeholder="Password SMTP">
+                </div>
+
+                <button id="saveButton" class="save-button">💾 Simpan Konfigurasi</button>
+                <button id="resetButton" class="reset-button">🔄 Reset ke Default</button>
+                <div id="message" class="message"></div>
+            </div>
         </div>
     </div>
 
     <script>
-        const sendButton = document.getElementById('sendButton');
-        const destinationInput = document.getElementById('destination');
-        const contentEditor = document.getElementById('content');
+        // DOM Elements
+        const composerCards = document.querySelectorAll('.composer-card');
+        const saveButton = document.getElementById('saveButton');
+        const resetButton = document.getElementById('resetButton');
         const messageDiv = document.getElementById('message');
+        const smtpHost = document.getElementById('smtpHost');
+        const smtpPort = document.getElementById('smtpPort');
+        const smtpUser = document.getElementById('smtpUser');
+        const smtpPass = document.getElementById('smtpPass');
 
+        // Load SMTP configurations from server
+        async function loadSMTPConfigsFromServer() {
+            try {
+                const response = await fetch('/get-smtp-configs');
+                const data = await response.json();
+
+                if (data.success) {
+                    return data.configs;
+                } else {
+                    console.error('Failed to load SMTP configs:', data.message);
+                    // Return default configurations if server fails
+                    return getDefaultConfigs();
+                }
+            } catch (error) {
+                console.error('Error loading SMTP configs from server:', error);
+                // Return default configurations if server is unavailable
+                return getDefaultConfigs();
+            }
+        }
+
+        // Get default configurations
+        function getDefaultConfigs() {
+            return {
+                truedignity: {
+                    host: 'smtp.gmail.com',
+                    port: '587',
+                    user: 'support@truedignity.id',
+                    pass: ''
+                },
+                anywork: {
+                    host: 'smtp.hostinger.com',
+                    port: '465',
+                    user: 'mail@anywork.dev',
+                    pass: '1-Kemenangan'
+                }
+            };
+        }
+
+        // Initialize SMTP configurations
+        let smtpConfigs = {};
+
+        // Load configurations when page loads
+        async function initializeConfigs() {
+            smtpConfigs = await loadSMTPConfigsFromServer();
+            // Select first composer and load its config
+            selectComposer('truedignity');
+        }
+
+        // Current selected composer
+        let selectedComposer = 'truedignity';
+
+        // Function to show message
         function showMessage(text, type) {
             messageDiv.textContent = text;
             messageDiv.className = `message ${type} show`;
@@ -218,68 +367,144 @@
             }, 5000);
         }
 
-        sendButton.addEventListener('click', async () => {
-            const destination = destinationInput.value.trim();
-            
-            // Validate destination
-            if (!destination) {
-                showMessage('Please enter a destination email address', 'error');
+        // Function to load SMTP configuration
+        function loadSMTPConfig(composer) {
+            const config = smtpConfigs[composer];
+            smtpHost.value = config.host;
+            smtpPort.value = config.port;
+            smtpUser.value = config.user;
+            smtpPass.value = config.pass;
+        }
+
+        // Function to handle composer selection
+        function selectComposer(composer) {
+            // Remove active class from all cards
+            composerCards.forEach(card => card.classList.remove('active'));
+
+            // Add active class to selected card
+            const selectedCard = document.querySelector(`[data-composer="${composer}"]`);
+            selectedCard.classList.add('active');
+
+            // Update selected composer and load config
+            selectedComposer = composer;
+            loadSMTPConfig(composer);
+
+            // Show URL for the selected composer
+            const url = `/${composer}`;
+            showMessage(`Template ${composer} dipilih. Buka: ${window.location.origin}${url}`, 'success');
+        }
+
+        // Event listeners for composer cards
+        composerCards.forEach(card => {
+            card.addEventListener('click', () => {
+                const composer = card.getAttribute('data-composer');
+                selectComposer(composer);
+            });
+        });
+
+        // Event listeners for navigate buttons
+        document.querySelectorAll('.navigate-button').forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.stopPropagation(); // Prevent triggering the card click event
+                const url = button.getAttribute('data-url');
+                window.open(url, '_blank');
+            });
+        });
+
+        // Event listener for save button
+        saveButton.addEventListener('click', async () => {
+            const config = {
+                host: smtpHost.value.trim(),
+                port: smtpPort.value.trim(),
+                user: smtpUser.value.trim(),
+                pass: smtpPass.value.trim()
+            };
+
+            // Validate required fields
+            if (!config.host || !config.port || !config.user || !config.pass) {
+                showMessage('Mohon lengkapi semua field konfigurasi SMTP', 'error');
                 return;
             }
-
-            const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-            if (!emailRegex.test(destination)) {
-                showMessage('Please enter a valid email address', 'error');
-                return;
-            }
-
-            // Get the HTML content from the editor using outerHTML
-            const htmlContent = contentEditor.outerHTML;
-            
-            // Replace the contenteditable attribute and class to clean up the HTML
-            const cleanedHtml = htmlContent
-                .replace(/contenteditable="true"/g, '')
-                .replace(/class="content-editor"/g, 'style="font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, sans-serif; line-height: 1.6; padding: 20px;"');
 
             // Disable button and show loading state
-            sendButton.disabled = true;
-            sendButton.textContent = 'Sending...';
+            saveButton.disabled = true;
+            saveButton.textContent = 'Menyimpan...';
 
             try {
-                const response = await fetch('/send-email', {
+                const response = await fetch('/save-smtp-config', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        to: destination,
-                        html: cleanedHtml
+                        composer: selectedComposer,
+                        config: config
                     })
                 });
 
                 const data = await response.json();
 
                 if (data.success) {
-                    showMessage('Email sent successfully! ✓', 'success');
+                    // Update local configs after successful save
+                    smtpConfigs[selectedComposer] = config;
+                    showMessage('Konfigurasi SMTP berhasil disimpan di server! ✓', 'success');
                 } else {
-                    showMessage(data.message || 'Failed to send email', 'error');
+                    showMessage(data.message || 'Gagal menyimpan konfigurasi', 'error');
                 }
             } catch (error) {
                 console.error('Error:', error);
-                showMessage('Network error. Please try again.', 'error');
+                showMessage('Kesalahan jaringan. Silakan coba lagi.', 'error');
             } finally {
                 // Re-enable button
-                sendButton.disabled = false;
-                sendButton.textContent = 'Send Email';
+                saveButton.disabled = false;
+                saveButton.textContent = '💾 Simpan Konfigurasi';
             }
         });
 
-        // Add keyboard shortcut (Ctrl/Cmd + Enter) to send
-        document.addEventListener('keydown', (e) => {
-            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
-                sendButton.click();
+        // Event listener for reset button
+        resetButton.addEventListener('click', async () => {
+            // Default configurations
+            const defaultConfigs = getDefaultConfigs();
+
+            // Disable button and show loading state
+            resetButton.disabled = true;
+            resetButton.textContent = 'Mereset...';
+
+            try {
+                const response = await fetch('/save-smtp-config', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        composer: selectedComposer,
+                        config: defaultConfigs[selectedComposer]
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Update local configs after successful reset
+                    smtpConfigs[selectedComposer] = { ...defaultConfigs[selectedComposer] };
+                    // Reload the current config
+                    loadSMTPConfig(selectedComposer);
+                    showMessage('Konfigurasi berhasil direset ke nilai default di server!', 'success');
+                } else {
+                    showMessage(data.message || 'Gagal mereset konfigurasi', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showMessage('Kesalahan jaringan. Silakan coba lagi.', 'error');
+            } finally {
+                // Re-enable button
+                resetButton.disabled = false;
+                resetButton.textContent = '🔄 Reset ke Default';
             }
         });
+
+        // Initialize configurations when page loads
+        initializeConfigs();
     </script>
 </body>
 </html>

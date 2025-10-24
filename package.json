@@ -4,7 +4,9 @@
   "description": "Compose beatiful email HTML simpler",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "nodemon server.js",
+    "dev": "nodemon server.js",
+    "prod": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -13,5 +15,8 @@
   "dependencies": {
     "express": "^5.1.0",
     "nodemailer": "^7.0.10"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
   }
 }
