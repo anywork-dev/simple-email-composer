@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  email-composer:
+    image: node:18-alpine
+    container_name: simple-email-composer
+    working_dir: /app
+    volumes:
+      - .:/app
+    command: npm start
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+    networks:
+      - public-web
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.email-composer.rule=Host(`mail.anywork.dev`)"
+      - "traefik.http.routers.email-composer.entrypoints=websecure"
+      - "traefik.http.routers.email-composer.tls=true"
+      - "traefik.http.routers.email-composer.tls.certresolver=myresolver"
+      - "traefik.http.services.email-composer.loadbalancer.server.port=3000"
+
+networks:
+  public-web:
+    external: true
