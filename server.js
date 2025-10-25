@@ -2,9 +2,13 @@ const express = require('express');
 const nodemailer = require('nodemailer');
 const path = require('path');
 const fs = require('fs');
+const session = require('express-session');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Static password for authentication (you can change this)
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'secure123';
 
 // SMTP Configuration storage
 const CONFIG_FILE = 'smtp-configs.json';
@@ -51,27 +55,105 @@ function saveSMTPConfigs(configs) {
 // Initialize SMTP configurations
 let smtpConfigs = loadSMTPConfigs();
 
+// Session configuration
+app.use(session({
+    secret: process.env.SESSION_SECRET || 'email-composer-secret-key-change-in-production',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
+        httpOnly: true,
+        maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    }
+}));
+
 // Middleware to parse JSON bodies
 app.use(express.json({ limit: '10mb' }));
-app.use(express.static('public'));
 
-// Serve the main dashboard page
-app.get('/', (req, res) => {
+// Authentication middleware
+function requireAuth(req, res, next) {
+    if (req.session.isAuthenticated) {
+        return next();
+    }
+    res.redirect('/login');
+}
+
+// Serve login page (unprotected) - this must come before static serving
+app.get('/login', (req, res) => {
+    // If already authenticated, redirect to dashboard
+    if (req.session.isAuthenticated) {
+        return res.redirect('/');
+    }
+    res.sendFile(path.join(__dirname, 'public', 'login.html'));
+});
+
+// Serve static files for CSS, JS, images, etc. (but not HTML files)
+app.use(express.static('public', {
+    index: false, // Don't serve index.html automatically
+    extensions: ['css', 'js', 'png', 'jpg', 'jpeg', 'gif', 'ico', 'svg']
+}));
+
+// Login endpoint
+app.post('/login', (req, res) => {
+    const { password } = req.body;
+
+    if (!password) {
+        return res.status(400).json({
+            success: false,
+            message: 'Password is required'
+        });
+    }
+
+    // Validate password
+    if (password === ADMIN_PASSWORD) {
+        // Set session as authenticated
+        req.session.isAuthenticated = true;
+        req.session.loginTime = new Date().toISOString();
+
+        res.json({
+            success: true,
+            message: 'Login successful'
+        });
+    } else {
+        res.status(401).json({
+            success: false,
+            message: 'Invalid password'
+        });
+    }
+});
+
+// Logout endpoint
+app.get('/logout', (req, res) => {
+    req.session.destroy((err) => {
+        if (err) {
+            console.error('Error destroying session:', err);
+            return res.status(500).json({
+                success: false,
+                message: 'Logout failed'
+            });
+        }
+        res.clearCookie('connect.sid');
+        res.redirect('/login');
+    });
+});
+
+// Serve the main dashboard page (protected)
+app.get('/', requireAuth, (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Serve TrueDignity composer
-app.get('/truedignity', (req, res) => {
+// Serve TrueDignity composer (protected)
+app.get('/truedignity', requireAuth, (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'truedignity', 'index.html'));
 });
 
-// Serve AnyWork composer
-app.get('/anywork', (req, res) => {
+// Serve AnyWork composer (protected)
+app.get('/anywork', requireAuth, (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'anywork', 'index.html'));
 });
 
-// Email sending endpoint
-app.post('/send-email', async (req, res) => {
+// Email sending endpoint (protected)
+app.post('/send-email', requireAuth, async (req, res) => {
     const { composer, from, to, subject, html } = req.body;
 
     if (!composer || !from || !to || !subject || !html) {
@@ -180,8 +262,8 @@ app.post('/send-email', async (req, res) => {
     }
 });
 
-// SMTP Configuration endpoint
-app.post('/save-smtp-config', (req, res) => {
+// SMTP Configuration endpoint (protected)
+app.post('/save-smtp-config', requireAuth, (req, res) => {
     const { composer, config } = req.body;
 
     if (!composer || !config) {
@@ -235,8 +317,8 @@ app.post('/save-smtp-config', (req, res) => {
     }
 });
 
-// Get SMTP configurations endpoint
-app.get('/get-smtp-configs', (req, res) => {
+// Get SMTP configurations endpoint (protected)
+app.get('/get-smtp-configs', requireAuth, (req, res) => {
     try {
         res.json({
             success: true,
@@ -251,8 +333,8 @@ app.get('/get-smtp-configs', (req, res) => {
     }
 });
 
-// Get specific composer SMTP configuration
-app.get('/get-smtp-config/:composer', (req, res) => {
+// Get specific composer SMTP configuration (protected)
+app.get('/get-smtp-config/:composer', requireAuth, (req, res) => {
     const { composer } = req.params;
 
     try {

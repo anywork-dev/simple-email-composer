@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node server.js)",
+      "Bash(docker logs traefik --tail 100)",
+      "Bash(docker logs traefik --tail 200)",
+      "Bash(docker exec traefik cat /etc/traefik/traefik.yml)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
