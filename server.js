@@ -60,13 +60,16 @@ app.use(session({
     secret: process.env.SESSION_SECRET || 'email-composer-secret-key-change-in-production',
     resave: false,
     saveUninitialized: false,
+    rolling: true, // Reset expiration on each request
     cookie: {
-        secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
+        secure: process.env.NODE_ENV === 'production' && process.env.FORCE_SECURE_COOKIES === 'true', // Only use secure cookies when explicitly forced
         httpOnly: true,
-        maxAge: 24 * 60 * 60 * 1000, // 24 hours
-        sameSite: 'lax' // Allow cookies for same-site requests
-    }
+        maxAge: 24 * 60 * 60 * 1000, // 24 hours,
+        sameSite: 'lax' // Help with cross-origin issues
+    },
+    name: 'connect.sid' // Explicitly set cookie name
 }));
+
 
 // Middleware to parse JSON bodies
 app.use(express.json({ limit: '10mb' }));
